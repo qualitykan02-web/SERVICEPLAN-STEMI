@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dashboard STEMI จังหวัดกาญจนบุรี</title>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#081730;--navy2:#0F2748;--navy3:#183A66;--gold:#D4AF37;--gold2:#F4DB8A;--ink:#EDF2FB;--mut:#9DB0CE;--bad:#FF8070;--line:rgba(212,175,55,.25);--red:#E0243A;--red2:#8E1226}
+*{box-sizing:border-box}
+body{margin:0;padding:22px;min-height:100vh;font-family:'Sarabun',system-ui,sans-serif;color:var(--ink);
+background:radial-gradient(1100px 520px at 85% -8%,#1d447c 0,transparent 62%),radial-gradient(800px 420px at -5% 105%,rgba(224,36,58,.28) 0,transparent 60%),var(--navy)}
+header{display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between;align-items:flex-end;border-bottom:3px solid;border-image:linear-gradient(90deg,var(--gold),var(--red)) 1;padding-bottom:14px;margin-bottom:18px}
+h1{margin:0;font-size:clamp(20px,3vw,30px);font-weight:800;background:linear-gradient(90deg,var(--gold2),var(--gold));-webkit-background-clip:text;background-clip:text;color:transparent}
+.sub{color:var(--mut);margin-top:4px;font-size:14px}
+.ctl{display:flex;flex-wrap:wrap;gap:10px;align-items:center;font-size:13px;color:var(--mut)}
+.badge{display:inline-flex;align-items:center;gap:7px;padding:5px 12px;border:1px solid var(--line);border-radius:99px;background:var(--navy2);color:var(--ink)}
+.dot{width:9px;height:9px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 0 rgba(212,175,55,.6);animation:p 2s infinite}
+.off .dot{background:var(--bad);animation:none}
+@keyframes p{70%{box-shadow:0 0 0 8px rgba(212,175,55,0)}100%{box-shadow:0 0 0 0 rgba(212,175,55,0)}}
+@media(prefers-reduced-motion:reduce){.dot{animation:none}}
+button,select{font:inherit;color:var(--ink);background:var(--navy3);border:1px solid var(--line);border-radius:8px;padding:6px 12px;cursor:pointer}
+button:hover{border-color:var(--gold)}button:focus-visible,select:focus-visible{outline:2px solid var(--gold2);outline-offset:2px}
+.sum{background:linear-gradient(135deg,#3a1220 0,var(--navy2) 70%);border:1px solid var(--red);border-left:6px solid var(--red);border-radius:14px;padding:16px 20px;margin:18px 0}
+.sum h2{margin:0 0 8px;font-size:17px;color:#FFC4C9}
+.sum ul{margin:0;padding-left:20px;line-height:1.75;font-size:15px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px;margin-bottom:18px}
+.card{background:var(--navy2);border:1px solid var(--line);border-top:3px solid var(--gold);border-radius:12px;padding:14px 16px}
+.card.bad{border-top-color:var(--bad)}
+.card .n{font-size:13px;color:var(--mut);min-height:38px;line-height:1.35}
+.card .v{font-size:36px;font-weight:800;color:var(--gold2);line-height:1.15;margin-top:4px}
+.card.bad .v{color:var(--bad)}
+.v small{font-size:15px;font-weight:500;color:var(--mut)}
+.meta{display:flex;justify-content:space-between;align-items:center;font-size:12.5px;color:var(--mut);margin:4px 0 6px}
+.chip{padding:2px 10px;border-radius:99px;font-weight:700;font-size:12px}
+.chip.ok{background:rgba(212,175,55,.18);color:var(--gold2)}.chip.bad{background:rgba(255,128,112,.18);color:var(--bad)}.chip.na{background:#27405f;color:var(--mut)}
+.tr{font-size:11px;color:var(--mut);text-align:center}
+.panel{background:var(--navy2);border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin-bottom:18px}
+.panel h2{margin:0 0 10px;font-size:17px;color:var(--gold2);border-left:4px solid var(--red);padding-left:10px}
+.tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.tabs button.on{background:var(--gold);color:var(--navy);font-weight:700;border-color:var(--gold)}
+.hint{font-size:12.5px;color:var(--mut);margin-bottom:10px}
+.br{display:grid;grid-template-columns:minmax(120px,230px) 1fr 120px;gap:10px;align-items:center;margin:6px 0;font-size:13.5px}
+.track{position:relative;height:20px;background:#0a1d38;border-radius:6px}
+.fill{height:100%;border-radius:6px}.fill.ok{background:linear-gradient(90deg,#9a7b1d,var(--gold))}.fill.bad{background:linear-gradient(90deg,#b4483c,var(--bad))}
+.tg{position:absolute;top:-4px;bottom:-4px;width:2px;background:#fff;opacity:.85}
+.val{text-align:right;font-variant-numeric:tabular-nums}
+.wrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:760px;font-size:13.5px}
+th{background:var(--navy3);color:var(--gold2);padding:9px 8px;font-weight:600;text-align:center;border-bottom:2px solid var(--red);position:sticky;top:0}
+td{padding:7px 8px;border-bottom:1px solid rgba(157,176,206,.15);text-align:center;font-variant-numeric:tabular-nums}
+td:first-child,th:first-child{text-align:left;position:sticky;left:0;background:var(--navy2);z-index:1}
+th:first-child{background:var(--navy3)}
+td.ok{color:var(--gold2)}td.bad{color:var(--bad);background:rgba(255,128,112,.09);font-weight:600}td.na{color:#6f84a4}
+td small{display:block;color:var(--mut);font-size:11px;font-weight:400}
+tr.tot td{font-weight:800;border-top:2px solid var(--gold);background:rgba(212,175,55,.08)}
+.warn{border:1px dashed var(--gold);border-radius:10px;padding:10px 14px;font-size:13px;color:var(--gold2);line-height:1.6;margin-bottom:14px}
+footer{color:var(--mut);font-size:12px;text-align:center;margin-top:8px}
+.brand{display:flex;align-items:center;gap:16px}
+.heart{width:74px;height:74px;flex:none;filter:drop-shadow(0 4px 14px rgba(224,36,58,.55));animation:beat 1.6s ease-in-out infinite;transform-origin:center}
+@keyframes beat{0%,100%{transform:scale(1)}14%{transform:scale(1.09)}28%{transform:scale(1)}42%{transform:scale(1.05)}}
+@media(prefers-reduced-motion:reduce){.heart{animation:none}}
+.sum{position:relative;overflow:hidden}
+.sum::after{content:"";position:absolute;right:-30px;bottom:-40px;width:210px;height:210px;opacity:.12;pointer-events:none;
+background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath fill='%23E0243A' d='M50 88C20 66 6 48 6 32 6 18 17 9 29 9c9 0 17 5 21 13 4-8 12-13 21-13 12 0 23 9 23 23 0 16-14 34-44 56z'/%3E%3C/svg%3E") no-repeat center/contain}
+@media(max-width:640px){.heart{width:52px;height:52px}}
+@media(max-width:640px){body{padding:12px}.br{grid-template-columns:1fr 90px}.br .track{grid-column:1/3;order:3}}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">
+    <svg class="heart" viewBox="0 0 100 100" role="img" aria-label="หัวใจ">
+      <defs><linearGradient id="hg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FF5A5F"/><stop offset="1" stop-color="#9B1226"/></linearGradient></defs>
+      <path fill="url(#hg)" d="M50 90C19 67 5 48 5 32 5 17 17 7 30 7c8 0 16 4 20 12 4-8 12-12 20-12 13 0 25 10 25 25 0 16-14 35-45 58z"/>
+      <path d="M13 52H34L42 34 53 70 61 44 67 52H87" fill="none" stroke="#F4DB8A" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <div>
+      <h1>ตัวชี้วัดโรคกล้ามเนื้อหัวใจตายเฉียบพลัน (STEMI) จังหวัดกาญจนบุรี</h1>
+      <div class="sub" id="meta">กำลังโหลดข้อมูล…</div>
+    </div>
+  </div>
+  <div class="ctl">
+    <span class="badge" id="st"><span class="dot"></span><span id="stt">กำลังเชื่อมต่อ…</span></span>
+    <label>รีเฟรชทุก
+      <select id="iv"><option value="30">30 วินาที</option><option value="45" selected>45 วินาที</option><option value="60">60 วินาที</option></select>
+    </label>
+    <button id="rf" type="button">โหลดทันที</button>
+  </div>
+</header>
+
+<div id="warn"></div>
+<section class="grid" id="cards"></section>
+
+<section class="panel">
+  <h2>เปรียบเทียบรายหน่วยบริการ</h2>
+  <div class="tabs" id="tabs" role="tablist"></div>
+  <div class="hint" id="hint"></div>
+  <div id="bars"></div>
+</section>
+
+<section class="panel">
+  <h2>ตารางสรุปทุกตัวชี้วัด (สีแดง = ไม่ผ่านเกณฑ์)</h2>
+  <div class="wrap"><table id="tbl"></table></div>
+</section>
+<section class="sum" id="sum"></section>
+<footer>เกณฑ์ผ่าน/ไม่ผ่านคำนวณจากค่าเป้าหมายในระบบนี้ ไม่ใช้คอลัมน์ “ผ่าน/ไม่ผ่าน” ในชีต · * = ตัวหาร (B) น้อยกว่า 5 ควรตีความอย่างระมัดระวัง</footer>
+
+<script>
+/* ===== ตั้งค่า: วางลิงก์ CSV จาก Google Sheet (File > Share > Publish to web > CSV) ===== */
+const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQtUIKgV9u8z0Oc4Vqz3eS3qTZlRvZgj-oa9fwkgVOOt_FbYsZ2vKK63GQ0DQq2Ejlo_t4xIXtdGGAR/pub?gid=0&single=true&output=csv';
+let REFRESH_SEC = 45;           // ดึงซ้ำอัตโนมัติ (ปรับได้ที่หน้าจอ 30/45/60)
+/* ========================================================================================= */
+
+const KPI = [
+  {n:'อัตราตาย STEMI (ใน รพ.)', tx:'< 8', t:8, dir:'lt'},
+  {n:'อัตราตาย STEMI ภายใน 30 วัน', tx:'< 9', t:9, dir:'lt'},
+  {n:'ได้รับยาละลายลิ่มเลือดตามเกณฑ์เวลา', tx:'≥ 70', t:70, dir:'ge'},
+  {n:'Primary PCI ตามเกณฑ์เวลา', tx:'≥ 70', t:70, dir:'ge'},
+  {n:'CAG+PCI ภายใน 60 วัน', tx:'> 80', t:80, dir:'gt'}
+];
+const YRS = ['2566','2567','2568','2569'];
+
+/* ข้อมูลสำรอง (กรณีโหลดชีตไม่ได้) – รูปแบบเดียวกับชีตจริง */
+const SNAP = `,ปีงบประมาณ 2569,ข้อมูล ณ วันที่ 19 ตุลาคม พ.ศ. 2569
+1.,,,,,,,9.85,8.04,11,6.02
+2.,,,,,,,N/A,N/A,11,6.39
+3.,,,,,,,41.67,64.47,70.2,73.08
+4.,,,,,,,89.47,85.51,95.7,95.65
+5.,,,,,,,N/A,N/A,67.12,95.84
+1,รพ.พหลพลพยุหเสนา,2,61,,,2,61,,,2,2,,,55,60,,,461,481
+2,รพ.มะการักษ์,4,57,,,4,57,,,0,1,,,55,56
+3,รพ.ทองผาภูมิ,1,18,,,1,18,,,8,18,,,0,0
+4,รพ.สมเด็จพระสังฆราชองค์ที่ 19,0,28,,,1,28,,,1,3,,,25,25
+5,รพ.บ่อพลอย,1,8,,,1,8,,,0,0,,,8,8
+6,รพ.สังขละบุรี,1,10,,,1,10,,,9,10,,,0,0
+7,รพ.เจ้าคุณไพบูลย์พนมทวน,2,14,,,2,14,,,2,2,,,12,12
+8,รพ.ด่านมะขามเตี้ย,1,16,,,1,16,,,9,12,,,13,13
+9,รพ.ท่ากระดาน,0,8,,,0,8,,,5,7,,,0,0
+10,รพ.ไทรโยค,1,7,,,1,7,,,3,4,,,2,2
+11,รพ.เลาขวัญ,0,13,,,0,13,,,9,12,,,0,0
+12,รพ.พยาบาลสถานพระบารมี,1,4,,,1,4,,,4,4,,,0,0
+13,รพ.สมเด็จพระปิยมหาราชรมณียเขต,0,1,,,0,1,,,0,0,,,0,0
+14,รพ.ห้วยกระเจาเฉลิมพระเกียรติ 80 พรรษา,0,6,,,0,6,,,0,0,,,6,6
+15,รพ.ศุกร์ศิริศรีสวัสดิ์,0,2,,,0,2,,,2,2,,,0,0
+16,รพ.หนองปรือ,2,13,,,2,13,,,12,12,,,0,0
+รวมทั้งสิ้น,,16,266,,,17,266,,,66,89,,,176,182,,,461,481`;
+
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const num = s => { const x = parseFloat(String(s ?? '').replace(/,/g,'')); return isNaN(x) ? null : x; };
+const fmt = v => v == null ? '—' : v.toFixed(2);
+const passed = (v,i) => { if (v == null) return null; const k = KPI[i]; return k.dir==='lt' ? v<k.t : k.dir==='ge' ? v>=k.t : v>k.t; };
+const cls = (v,i) => { const o = passed(v,i); return o == null ? 'na' : o ? 'ok' : 'bad'; };
+
+function parseCSV(t){
+  const rows=[]; let r=[], f='', q=false;
+  for (let i=0;i<t.length;i++){
+    const c=t[i];
+    if (q){ if(c==='"'){ if(t[i+1]==='"'){f+='"';i++;} else q=false; } else f+=c; }
+    else if (c==='"') q=true;
+    else if (c===','){ r.push(f); f=''; }
+    else if (c==='\n'||c==='\r'){ if(c==='\r'&&t[i+1]==='\n') i++; r.push(f); rows.push(r); r=[]; f=''; }
+    else f+=c;
+  }
+  if (f!==''||r.length){ r.push(f); rows.push(r); }
+  return rows;
+}
+function mkRow(r,name){
+  return {name, k:KPI.map((_,i)=>{ const a=num(r[2+4*i]), b=num(r[3+4*i]); return {a,b,v:(b>0&&a!=null)?a/b*100:null}; })};
+}
+function parse(text){
+  const R = parseCSV(text);
+  const d = {fy:((R[0]||[])[1]||'').trim(), asof:((R[0]||[])[2]||'').trim(), trend:[], hosp:[], total:null};
+  R.forEach(r=>{
+    const c0=(r[0]||'').trim(), c1=(r[1]||'').trim();
+    if (/^(ตัวชี้วัด\s*:\s*)?\d\./.test(c0)) d.trend.push([7,8,9,10].map(i=>({raw:(r[i]||'').trim(), v:num(r[i])})));
+    else if (/^\d+$/.test(c0) && c1) d.hosp.push(mkRow(r,c1));
+    else if (c0.startsWith('รวมทั้งสิ้น')) d.total = mkRow(r,'รวมทั้งจังหวัด');
+  });
+  if (!d.total && d.hosp.length){
+    d.total = {name:'รวมทั้งจังหวัด', k:KPI.map((_,i)=>{ let a=0,b=0; d.hosp.forEach(h=>{a+=h.k[i].a||0;b+=h.k[i].b||0;}); return {a,b,v:b>0?a/b*100:null}; })};
+  }
+  return d;
+}
+
+function spark(vals,t){
+  const W=150,H=44,p=6, nums=vals.filter(v=>v!=null).concat([t]);
+  const mn=Math.min(...nums), mx=Math.max(...nums), r=(mx-mn)||1;
+  const X=i=>p+i*(W-2*p)/3, Y=v=>H-p-(v-mn)/r*(H-2*p);
+  let d='',dots='';
+  vals.forEach((v,i)=>{ if(v==null) return; d+=(d?'L':'M')+X(i)+','+Y(v); dots+=`<circle cx="${X(i)}" cy="${Y(v)}" r="${i===3?3.8:2.6}" fill="${i===3?'#F4DB8A':'#D4AF37'}"/>`; });
+  return `<svg viewBox="0 0 ${W} ${H}" width="100%" height="44" role="img" aria-label="แนวโน้ม 4 ปี"><line x1="${p}" x2="${W-p}" y1="${Y(t)}" y2="${Y(t)}" stroke="#9DB0CE" stroke-dasharray="3 3" opacity=".7"/><path d="${d}" fill="none" stroke="#D4AF37" stroke-width="2"/>${dots}</svg>`;
+}
+
+let D=null, sel=0, live=false, left=REFRESH_SEC, busy=false, lastOK=null, errMsg='';
+
+function renderSummary(){
+  const T=D.total; if(!T) return;
+  const okN=T.k.filter((x,i)=>passed(x.v,i)===true).length;
+  const failK=T.k.map((x,i)=>passed(x.v,i)===false?KPI[i].n:null).filter(Boolean);
+  const cnt=D.hosp.map(h=>({n:h.name, c:h.k.filter((x,i)=>passed(x.v,i)===false).length})).filter(x=>x.c>0).sort((a,b)=>b.c-a.c).slice(0,5);
+  const k1=D.hosp.filter(h=>passed(h.k[0].v,0)===false).map(h=>`${h.name} (${fmt(h.k[0].v)}%)`);
+  $('sum').innerHTML = `<h2>สรุปผู้บริหาร</h2><ul>
+    <li>ระดับจังหวัดผ่านเกณฑ์ <b>${okN} จาก ${KPI.length}</b> ตัวชี้วัด${failK.length?` · ยังไม่ผ่าน: ${esc(failK.join(', '))}`:''}</li>
+    <li>อัตราตาย STEMI ในโรงพยาบาลระดับจังหวัด <b>${fmt(T.k[0].v)}%</b> (${T.k[0].a}/${T.k[0].b}) เป้าหมาย &lt; 8%</li>
+    <li>หน่วยบริการที่อัตราตายเกินเกณฑ์ ${k1.length} แห่ง: ${esc(k1.join(', ')||'-')}</li>
+    <li>หน่วยบริการที่ไม่ผ่านหลายตัวชี้วัดสูงสุด: ${esc(cnt.map(x=>`${x.n} (${x.c})`).join(', ')||'-')}</li></ul>`;
+}
+function renderWarn(){
+  const w=[];
+  D.total && KPI.forEach((k,i)=>{
+    const t=D.trend[i] && D.trend[i][3] && D.trend[i][3].v, v=D.total.k[i].v;
+    if (t!=null && v!=null && Math.abs(t-v)>0.05) w.push(`ตัวชี้วัด ${i+1}: ตารางแนวโน้มปี 2569 = ${t} แต่ยอดรวมจากหน่วยบริการ = ${fmt(v)}`);
+  });
+  $('warn').innerHTML = w.length ? `<div class="warn"><b>ข้อสังเกตด้านคุณภาพข้อมูล:</b><br>${w.map(esc).join('<br>')}</div>` : '';
+}
+function renderCards(){
+  $('cards').innerHTML = KPI.map((k,i)=>{
+    const x=D.total.k[i], c=cls(x.v,i), tr=D.trend[i]||[];
+    const tv=YRS.map((y,j)=>tr[j]?tr[j].v:null);
+    const chip={ok:'ผ่านเกณฑ์',bad:'ไม่ผ่านเกณฑ์',na:'ไม่มีข้อมูล'}[c];
+    return `<div class="card ${c==='bad'?'bad':''}"><div class="n">${i+1}. ${esc(k.n)}</div>
+      <div class="v">${fmt(x.v)}<small> %</small></div>
+      <div class="meta"><span>เป้าหมาย ${k.tx}%</span><span class="chip ${c}">${chip}</span></div>
+      <div class="meta"><span>${x.a ?? '-'} / ${x.b ?? '-'} ราย</span></div>
+      ${spark(tv,k.t)}
+      <div class="tr">${YRS.map((y,j)=>`${y.slice(2)}: ${tr[j]&&tr[j].raw?esc(tr[j].raw):'-'}`).join(' · ')}</div></div>`;
+  }).join('');
+}
+function renderBars(){
+  $('tabs').innerHTML = KPI.map((k,i)=>`<button type="button" role="tab" class="${i===sel?'on':''}" data-i="${i}">${i+1}. ${esc(k.n)}</button>`).join('');
+  const k=KPI[sel];
+  $('hint').textContent = `เป้าหมาย ${k.tx}% (เส้นขาว) · เรียงจากหน่วยที่ควรติดตามก่อน`;
+  const rows=D.hosp.map(h=>({n:h.name,...h.k[sel]}));
+  const has=rows.filter(r=>r.v!=null).sort((a,b)=>k.dir==='lt'?b.v-a.v:a.v-b.v);
+  const none=rows.filter(r=>r.v==null);
+  const mx=k.dir==='lt'?Math.max(k.t*1.4,...has.map(r=>r.v),1):100;
+  let h=has.map(r=>`<div class="br"><div>${esc(r.n)}</div><div class="track"><div class="fill ${cls(r.v,sel)}" style="width:${Math.max(r.v/mx*100,0.6)}%"></div><div class="tg" style="left:${k.t/mx*100}%"></div></div><div class="val">${fmt(r.v)}% <small style="color:var(--mut)">(${r.a}/${r.b})</small></div></div>`).join('');
+  if (none.length) h+=`<div class="hint" style="margin-top:12px">ไม่มีผู้ป่วยในช่วงเวลา/ไม่มีข้อมูล: ${esc(none.map(r=>r.n).join(', '))}</div>`;
+  $('bars').innerHTML = h || '<div class="hint">ไม่มีข้อมูล</div>';
+}
+function renderTable(){
+  const cell=(x,i)=>`<td class="${cls(x.v,i)}">${fmt(x.v)}${x.b>0?`<small>${x.a}/${x.b}${x.b<5?' *':''}</small>`:''}</td>`;
+  const head=`<tr><th>หน่วยบริการ</th>${KPI.map((k,i)=>`<th>${i+1}. ${esc(k.n)}<br><small>${k.tx}%</small></th>`).join('')}</tr>`;
+  const body=D.hosp.map(h=>`<tr><td>${esc(h.name)}</td>${h.k.map(cell).join('')}</tr>`).join('');
+  $('tbl').innerHTML = head + body + `<tr class="tot"><td>รวมทั้งจังหวัด</td>${D.total.k.map(cell).join('')}</tr>`;
+}
+function renderAll(){
+  $('meta').textContent = [D.fy,D.asof].filter(Boolean).join(' · ') || 'ข้อมูลจาก Google Sheet';
+  renderSummary(); renderWarn(); renderCards(); renderBars(); renderTable();
+}
+function status(){
+  const el=$('st'); el.classList.toggle('off',!live);
+  const t=lastOK?lastOK.toLocaleTimeString('th-TH'):'-';
+  $('stt').textContent = busy ? 'กำลังโหลด…' : live ? `LIVE · อัปเดต ${t} · รอบถัดไป ${left} วิ` : `ใช้ข้อมูลสำรอง (${errMsg}) · ลองใหม่ใน ${left} วิ`;
+}
+
+async function load(){
+  if (busy) return; busy=true; status();
+  try{
+    const u = SHEET_CSV_URL + (SHEET_CSV_URL.includes('?')?'&':'?') + '_=' + Date.now();
+    const res = await fetch(u,{cache:'no-store'});
+    if (!res.ok) throw new Error('HTTP '+res.status);
+    const d = parse(await res.text());
+    if (!d.hosp.length) throw new Error('รูปแบบชีตไม่ตรง');
+    D=d; live=true; lastOK=new Date(); errMsg='';
+  }catch(e){
+    live=false; errMsg=e.message||'เชื่อมต่อไม่ได้';
+    if(!D) D=parse(SNAP);
+  }
+  busy=false; left=REFRESH_SEC; renderAll(); status();
+}
+$('tabs').addEventListener('click',e=>{ const b=e.target.closest('button'); if(b&&D){ sel=+b.dataset.i; renderBars(); } });
+$('rf').addEventListener('click',load);
+$('iv').addEventListener('change',e=>{ REFRESH_SEC=+e.target.value; left=REFRESH_SEC; status(); });
+setInterval(()=>{ if(busy) return; left--; if(left<=0) load(); else status(); },1000);
+load();
+</script>
+</body>
+</html>
